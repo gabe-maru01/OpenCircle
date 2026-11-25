@@ -748,6 +748,9 @@ def answer_question(q_id):
     return jsonify(message="Answer published!")
 
 
+
+
+init_db()
+
 if __name__ == "__main__":
-    init_db()
     app.run(debug=True)
