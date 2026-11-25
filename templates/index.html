@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenCircle — Find the person who knows</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="#" onclick="go('home');return false">
+      <img class="brand-logo" src="{{ url_for('static', filename='logo.png') }}" alt="OpenCircle — Learn • Share • Grow">
+    </a>
+    <nav class="nav" id="nav">
+      <a href="#" onclick="go('home');return false">Home</a>
+      <a href="#" onclick="go('explore');return false">Explore</a>
+      <a href="#" onclick="go('courses');return false">Long-Term Courses</a>
+      <a href="#" onclick="go('community');return false">Quick Ask Q&A</a>
+      <a href="#" onclick="go('teach');return false">Teach</a>
+      <a href="#" onclick="go('dashboard');return false">Dashboard</a>
+    </nav>
+    <div class="navright" id="navAuthArea">
+      <button class="btn secondary btn-sm" onclick="openAuthModal('student','login')">Student Login</button>
+      <button class="btn primary btn-sm" onclick="openAuthModal('teacher','login')">Teacher Login</button>
+      <button class="mobile-menu" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- HOME VIEW -->
+<main id="home" class="view active">
+  <div class="wrap">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">A world of knowledge, shared</div>
+        <h1>The world is full of knowledge. <em>Find the person who knows.</em></h1>
+        <p class="lead">Learn a skill, enroll in long-term academic & coding programmes, or connect via live voice & video calls with senior citizens sharing decades of lived wisdom.</p>
+        <div class="hero-actions">
+          <button class="btn primary" onclick="go('explore')">Explore all 12 domains ↗</button>
+          <button class="btn secondary" onclick="go('courses')">Long-term courses</button>
+        </div>
+        <div class="proof">
+          <div class="avatars">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&h=80&fit=crop&crop=faces" alt="">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&crop=faces" alt="">
+            <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=80&h=80&fit=crop&crop=faces" alt="">
+          </div>
+          <span>Illustrative demo prototype · Connecting learners, practitioners & senior mentors.</span>
+        </div>
+        <div class="searchbox">
+          <input id="heroSearch" placeholder="Search math, Python, drawing, Sanskrit, or city..." onkeydown="if(event.key==='Enter')searchFromHero()">
+          <select id="heroMode">
+            <option value="All">Online or nearby</option>
+            <option value="Online">Online</option>
+            <option value="Nearby">Near me</option>
+          </select>
+          <button class="btn primary" onclick="searchFromHero()">Search</button>
+        </div>
+      </div>
+
+      <div class="hero-art">
+        <img class="hero-main" src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1000&h=1200&fit=crop" alt="People learning together">
+        <div class="float-card float-one">
+          <span class="pill">Intergenerational</span>
+          <strong>Wisdom has no retirement age.</strong>
+          <small>Learn from senior mentors & everyday experts.</small>
+        </div>
+        <div class="float-card float-two">
+          <div class="mini-person">
+            <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=100&h=100&fit=crop" alt="">
+            <span><b>Live Voice & Video Rooms</b><small>Mentor-hosted interactive sessions</small></span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 12 KNOWLEDGE CATEGORIES -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Explore all 12 domains</div>
+          <h2>What would you love to learn?</h2>
+          <p>From rigorous academics and coding to classical arts, crafts, and timeless wisdom.</p>
+        </div>
+        <a class="textlink" href="#" onclick="go('explore');return false">View all mentors →</a>
+      </div>
+      <div class="categories" id="categories"></div>
+    </div>
+  </section>
+
+  <!-- HIGHLIGHTED SECTION: SENIOR CITIZENS & LIFE EXPERIENCE -->
+  <section class="section senior-spotlight">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow" style="color:#8a5a19">Voices of Experience · Senior Citizens Spotlight</div>
+          <h2>Decades of lived wisdom, passed on.</h2>
+          <p>Retired professors, veterans, home chefs, and master artisans sharing real-world knowledge and life lessons—many for free.</p>
+        </div>
+        <button class="btn secondary" onclick="exploreSeniors()">View all senior mentors →</button>
+      </div>
+      <div class="cards" id="seniorSpotlightGrid"></div>
+    </div>
+  </section>
+
+  <!-- LONG-TERM COURSES -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Structured long-term programmes</div>
+          <h2>Go deep with multi-week courses</h2>
+          <p>Semester-style tracks in Mathematics, Applied Physics, Full-Stack Python, and Visual Arts.</p>
+        </div>
+        <a class="textlink" href="#" onclick="go('courses');return false">Browse full syllabus catalog →</a>
+      </div>
+      <div class="course-grid" id="homeCourses"></div>
+    </div>
+  </section>
+
+  <!-- CALLOUT BANNER -->
+  <div class="wrap">
+    <div class="band">
+      <div>
+        <div class="eyebrow" style="color:#d5e2d7">Your knowledge matters</div>
+        <h2>Whether you're 22 or 72, what you know can guide someone.</h2>
+        <p>Sign up as a Teacher or Senior Mentor to create live video/voice rooms, teach a skill, or volunteer your life experience.</p>
+      </div>
+      <button class="btn" onclick="openAuthModal('teacher','register')">Join as Teacher / Elder →</button>
+    </div>
+  </div>
+
+  <!-- FEATURED PRACTITIONERS -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Across every discipline</div>
+          <h2>Meet the knowledge sharers</h2>
+          <p>Illustrative profiles across coding, arts, music, sports, and traditional crafts.</p>
+        </div>
+        <a class="textlink" href="#" onclick="go('explore');return false">Discover all →</a>
+      </div>
+      <div class="cards" id="featuredTeachers"></div>
+    </div>
+  </section>
+</main>
+
+<!-- EXPLORE VIEW -->
+<section id="explore" class="page">
+  <div class="wrap">
+    <div class="eyebrow">Discover people & skills</div>
+    <h1 class="page-title">Explore knowledge</h1>
+    <p class="page-intro">Filter by any of the 12 knowledge subjects, locality, online/nearby mode, or Senior Citizen mentors.</p>
+
+    <div class="togglebar" style="width:max-content;margin-top:22px;flex-wrap:wrap">
+      <button class="active" data-mode="All" onclick="setMode('All',this)">All</button>
+      <button data-mode="Online" onclick="setMode('Online',this)">Online</button>
+      <button data-mode="Nearby" onclick="setMode('Nearby',this)">Near me</button>
+      <button id="seniorToggleBtn" onclick="toggleSeniorFilter(this)">★ Senior Mentors Only</button>
+    </div>
+
+    <div class="filters">
+      <input id="search" placeholder="Search subject, skill, name, or city (e.g. Pune, Python)..." oninput="loadTeachers()">
+      <select id="subjectFilter" onchange="loadTeachers()">
+        <option value="">All 12 subjects</option>
+      </select>
+      <select id="mode" onchange="syncModeDropdown()">
+        <option value="All">All modes</option>
+        <option value="Online">Online</option>
+        <option value="Nearby">Nearby</option>
+      </select>
+      <button class="btn secondary" onclick="resetExploreFilters()">Reset</button>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <h2 style="font-size:23px" id="resultCount">People to learn from</h2>
+        <p>Illustrative demo listings stored in SQLite.</p>
+      </div>
+    </div>
+    <div class="cards" id="teachers"></div>
+  </div>
+</section>
+
+<!-- LONG-TERM COURSES VIEW -->
+<section id="courses" class="page">
+  <div class="wrap">
+    <div class="eyebrow">Multi-week & semester tracks</div>
+    <h1 class="page-title">Long-term courses & programmes</h1>
+    <p class="page-intro">Structured, week-by-week learning paths in Mathematics, Academics, Coding, Philosophy, and Creative Arts. Click any course to inspect its syllabus and enroll.</p>
+    <div class="filters">
+      <input id="courseSearch" placeholder="Search Mathematics, Python, Physics, Sanskrit..." oninput="loadCourses()">
+      <select id="courseSubjectFilter" onchange="loadCourses()">
+        <option value="">All subjects</option>
+      </select>
+    </div>
+    <div class="course-grid" id="coursesList"></div>
+  </div>
+</section>
+
+<!-- QUICK ASK COMMUNITY Q&A VIEW -->
+<section id="community" class="page">
+  <div class="wrap">
+    <div class="eyebrow">Peer & mentor Q&A board</div>
+    <h1 class="page-title">Quick Ask Community</h1>
+    <p class="page-intro">Have a specific question about math, coding, career choices, or life? Post it here for teachers and senior mentors to answer.</p>
+
+    <div class="form-card" style="margin-bottom:32px">
+      <h3 style="font-size:20px">Ask a question</h3>
+      <form id="questionForm" style="margin-top:14px">
+        <div class="form-grid">
+          <div class="field">
+            <label>Topic / Subject</label>
+            <select name="subject" id="questionSubjectSelect"></select>
+          </div>
+          <div class="field full">
+            <label>Your question</label>
+            <textarea name="question_text" rows="2" required placeholder="e.g. What is the best way to build intuition for discrete mathematics?"></textarea>
+          </div>
+          <div class="field full">
+            <button class="btn primary" type="submit" style="width:max-content">Post question</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div id="questionsList" class="booking-list"></div>
+  </div>
+</section>
+
+<!-- TEACH / CONTRIBUTOR VIEW -->
+<section id="teach" class="page">
+  <div class="wrap">
+    <div class="eyebrow">Share what you know</div>
+    <h1 class="page-title">Become a Teacher or Senior Mentor</h1>
+    <p class="page-intro">Publish a listing under your Teacher account. Senior citizens and retirees can highlight their decades of life and career wisdom.</p>
+
+    <div id="teachAuthGate" class="panel" style="max-width:580px;margin-top:28px;display:none">
+      <span class="pill">Teacher account required</span>
+      <h3 style="margin-top:14px">Sign in with a Teacher account to publish</h3>
+      <p>OpenCircle separates Student and Teacher accounts so educators and senior mentors have dedicated tools to manage listings, host live voice/video meet rooms, and approve requests.</p>
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+        <button class="btn primary" onclick="openAuthModal('teacher','login')">Teacher Sign In</button>
+        <button class="btn secondary" onclick="openAuthModal('teacher','register')">Register as Teacher / Senior</button>
+      </div>
+    </div>
+
+    <div class="form-card" id="teachFormCard" style="display:none">
+      <h2 style="font-size:25px">Publish a new teaching listing</h2>
+      <p class="muted">Saved to SQLite and linked to your Teacher dashboard for editing, deletion, and hosting live meet rooms.</p>
+      <form id="teacherForm" style="margin-top:18px">
+        <div class="form-grid">
+          <div class="field">
+            <label>Display name</label>
+            <input name="name" id="teachNameInput" required placeholder="e.g. Prof. Meera Nair">
+          </div>
+          <div class="field">
+            <label>Knowledge domain (1 of 12)</label>
+            <select name="subject" id="teachSubjectSelect" required></select>
+          </div>
+          <div class="field">
+            <label>Experience</label>
+            <input name="experience" placeholder="e.g. 12 years teaching / 35 years industry">
+          </div>
+          <div class="field">
+            <label>Learning mode</label>
+            <select name="mode">
+              <option>Online</option>
+              <option>Nearby</option>
+              <option>Online and Nearby</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>City / Neighbourhood</label>
+            <input name="location" placeholder="e.g. South Delhi & Online">
+          </div>
+          <div class="field">
+            <label>Indicative price</label>
+            <input name="price" placeholder="e.g. Free / volunteer or ₹399 / session">
+          </div>
+          <div class="field full">
+            <label style="flex-direction:row;align-items:center;gap:10px;background:#fdf8ee;padding:12px;border-radius:10px;border:1px solid #edd9b4">
+              <input type="checkbox" name="is_senior" id="isSeniorCheckbox" style="width:auto">
+              <span><b>Highlight in Senior Citizens & Life Experience Spotlight</b> (For retired professionals, elders & veteran artisans)</span>
+            </label>
+          </div>
+          <div class="field full">
+            <label>Introduction & what learners can expect</label>
+            <textarea name="bio" required placeholder="Share your background, teaching style, or life experience..."></textarea>
+          </div>
+          <div class="field full" style="flex-direction:row;align-items:center;gap:14px">
+            <button class="btn primary" type="submit">Publish listing</button>
+            <span id="teacherMessage" class="message"></span>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ROLE-SPECIFIC DASHBOARD VIEW -->
+<section id="dashboard" class="page">
+  <div class="wrap">
+    <div class="eyebrow" id="dashEyebrow">Personal workspace</div>
+    <h1 class="page-title" id="dashTitle">Your Dashboard</h1>
+    <p class="page-intro" id="dashSubtitle">Sign in as a Student or Teacher to access your workspace.</p>
+
+    <!-- Logged out gate -->
+    <div id="dashAuthGate" class="split" style="margin-top:28px;display:none">
+      <div class="panel">
+        <span class="pill">For Learners</span>
+        <h3 style="margin-top:14px">Student Dashboard</h3>
+        <p>Track your 1-on-1 session requests, join mentor-created voice & video calls, manage enrolled Math/Coding courses, and access saved mentors.</p>
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <button class="btn primary" onclick="openAuthModal('student','login')">Student Sign In</button>
+          <button class="btn secondary" onclick="openAuthModal('student','register')">Student Sign Up</button>
+        </div>
+      </div>
+      <div class="panel">
+        <span class="pill pill-gold">For Educators & Elders</span>
+        <h3 style="margin-top:14px">Teacher & Senior Mentor Dashboard</h3>
+        <p>Edit or delete your teaching listings, create live video & voice meet rooms for students, confirm requests, and answer community questions.</p>
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <button class="btn primary" onclick="openAuthModal('teacher','login')">Teacher Sign In</button>
+          <button class="btn secondary" onclick="openAuthModal('teacher','register')">Teacher Sign Up</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STUDENT DASHBOARD -->
+    <div id="studentDashContent" style="display:none;margin-top:28px">
+      <div class="section-head">
+        <div>
+          <h2 style="font-size:23px">My Enrolled Long-Term Courses</h2>
+          <p>Structured Math, Academic, and Coding programmes you have joined.</p>
+        </div>
+        <button class="btn secondary" onclick="go('courses')">+ Browse courses</button>
+      </div>
+      <div id="studentEnrollments" class="cards" style="margin-bottom:38px"></div>
+
+      <div class="section-head">
+        <div>
+          <h2 style="font-size:23px">My Session Requests & Live Calls</h2>
+          <p>Join voice or video rooms once your mentor creates and opens the session.</p>
+        </div>
+        <button class="btn secondary" onclick="loadDashboard()">Refresh</button>
+      </div>
+      <div id="outgoingBookings" class="booking-list" style="margin-bottom:38px"></div>
+
+      <div class="section-head">
+        <div>
+          <h2 style="font-size:23px">Saved Mentors & Senior Guides</h2>
+          <p>Bookmarked people you want to learn from.</p>
+        </div>
+      </div>
+      <div id="savedMentorsList" class="cards"></div>
+    </div>
+
+    <!-- TEACHER DASHBOARD -->
+    <div id="teacherDashContent" style="display:none;margin-top:28px">
+      <!-- MENTOR-ONLY INSTANT MEET LAUNCHER -->
+      <div class="panel" style="background:#eef4ec;border-color:#c6d8c4;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:30px">
+        <div>
+          <span class="pill">Mentor Host Controls</span>
+          <h3 style="margin-top:8px">Host an Instant Voice or Video Meet Room</h3>
+          <p style="margin:4px 0 0">Only teachers and senior mentors can create rooms. Start an instant session and copy the invite link for your student.</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn primary btn-sm" onclick="mentorCreateInstantMeet(false)">📹 Create Video Meet</button>
+          <button class="btn secondary btn-sm" onclick="mentorCreateInstantMeet(true)">🎙 Create Voice Call</button>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <div>
+          <h2 style="font-size:23px">My Teaching Listings</h2>
+          <p>Edit details or delete profiles linked to your account.</p>
+        </div>
+        <button class="btn primary" onclick="go('teach')">+ Add new listing</button>
+      </div>
+      <div id="myTeachersList" class="cards" style="margin-bottom:38px"></div>
+
+      <div class="section-head">
+        <div>
+          <h2 style="font-size:23px">Incoming Student Requests</h2>
+          <p>Confirm requests to automatically generate a private Meet Room, then launch video or voice calls.</p>
+        </div>
+        <button class="btn secondary" onclick="loadDashboard()">Refresh</button>
+      </div>
+      <div id="incomingBookings" class="booking-list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROFILE DETAIL VIEW -->
+<section id="profile" class="page">
+  <div class="wrap" id="profileContent"></div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand footer-brand" href="#" onclick="go('home');return false">
+          <img class="brand-logo" src="{{ url_for('static', filename='logo.png') }}" alt="OpenCircle — Learn • Share • Grow">
+        </a>
+        <p>A world where knowledge moves freely — connecting students, practitioners, and senior citizens across neighbourhoods and borders.</p>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <a href="#" onclick="go('explore');return false">All 12 Knowledge Domains</a>
+        <a href="#" onclick="exploreSeniors();return false">Senior Citizens Spotlight</a>
+        <a href="#" onclick="go('courses');return false">Long-Term Math & Coding</a>
+        <a href="#" onclick="go('community');return false">Quick Ask Q&A</a>
+      </div>
+      <div>
+        <h4>Portals</h4>
+        <a href="#" onclick="openAuthModal('student','login');return false">Student Sign In / Sign Up</a>
+        <a href="#" onclick="openAuthModal('teacher','login');return false">Teacher & Elder Sign In</a>
+        <a href="#" onclick="go('dashboard');return false">Workspace Dashboard</a>
+      </div>
+    </div>
+    <div class="copyright">© 2026 OpenCircle · Tutedude Buildathon Submission Prototype · Sample profiles and listings are illustrative demo data.</div>
+  </div>
+</footer>
+
+<!-- SEPARATE STUDENT / TEACHER AUTH MODAL -->
+<div class="modal-bg" id="authModal" onclick="if(event.target===this)closeAuthModal()">
+  <div class="modal">
+    <button class="close" onclick="closeAuthModal()">×</button>
+
+    <div class="role-switch">
+      <button id="roleBtnStudent" class="active" onclick="setAuthRole('student')">I am a Student</button>
+      <button id="roleBtnTeacher" onclick="setAuthRole('teacher')">I am a Teacher / Elder</button>
+    </div>
+
+    <div class="togglebar" style="width:max-content;margin:14px 0">
+      <button id="tabLogin" class="active" onclick="switchAuthTab('login')">Sign in</button>
+      <button id="tabRegister" onclick="switchAuthTab('register')">Create account</button>
+    </div>
+
+    <div class="demo-bar">
+      <small>One-click demo sign-in:</small>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+        <button type="button" class="btn secondary btn-sm" onclick="quickDemoLogin('student@opencircle.demo','student')">Student Demo</button>
+        <button type="button" class="btn secondary btn-sm" onclick="quickDemoLogin('teacher@opencircle.demo','teacher')">Coding Teacher Demo</button>
+        <button type="button" class="btn secondary btn-sm" onclick="quickDemoLogin('senior@opencircle.demo','teacher')">Senior Mentor Demo</button>
+      </div>
+    </div>
+
+    <form id="loginForm" style="margin-top:14px">
+      <h2 id="loginHeading">Student Sign In</h2>
+      <p id="loginSub">Access your enrolled courses, saved mentors, and live session calls.</p>
+      <div class="field" style="margin-top:12px">
+        <label>Email</label>
+        <input name="email" id="loginEmailInput" type="email" required placeholder="you@example.com">
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label>Password</label>
+        <input name="password" id="loginPassInput" type="password" required placeholder="••••••••">
+      </div>
+      <button class="btn primary" type="submit" style="width:100%;margin-top:16px">Sign in</button>
+      <div id="loginMessage" class="message" style="margin-top:10px"></div>
+    </form>
+
+    <form id="registerForm" style="display:none;margin-top:14px">
+      <h2 id="registerHeading">Create Student Account</h2>
+      <p id="registerSub">Join free to book 1-on-1 sessions and enroll in structured courses.</p>
+      <div class="field" style="margin-top:12px">
+        <label>Full name</label>
+        <input name="name" required placeholder="Your full name">
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label>Email</label>
+        <input name="email" type="email" required placeholder="you@example.com">
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label>Password (min 6 characters)</label>
+        <input name="password" type="password" minlength="6" required placeholder="Create a password">
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label id="regBioLabel">What are you excited to learn?</label>
+        <input name="bio" placeholder="e.g. Calculus, Python, Classical Guitar">
+      </div>
+      <button class="btn primary" type="submit" style="width:100%;margin-top:16px">Create account</button>
+      <div id="registerMessage" class="message" style="margin-top:10px"></div>
+    </form>
+  </div>
+</div>
+
+<!-- COURSE SYLLABUS MODAL -->
+<div class="modal-bg" id="courseModal" onclick="if(event.target===this)closeCourseModal()">
+  <div class="modal" id="courseModalBody"></div>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="modal-bg" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="close" onclick="closeModal()">×</button>
+    <span class="pill">Start learning</span>
+    <h2 id="modalTitle">Request a session</h2>
+    <p>Send a learning request directly to this teacher or senior mentor.</p>
+    <form id="bookingForm" style="margin-top:14px">
+      <input type="hidden" name="teacher_id">
+      <div class="field">
+        <label>Your name</label>
+        <input name="learner_name" id="bookLearnerName" required>
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label>Email</label>
+        <input name="learner_email" id="bookLearnerEmail" type="email" required>
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label>Preferred call / session format</label>
+        <select name="session_type">
+          <option>Video Meet (One-to-one)</option>
+          <option>Voice Call (Audio only)</option>
+          <option>Quick advice</option>
+          <option>Group learning</option>
+        </select>
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label>What would you like help with?</label>
+        <textarea name="message" rows="3" placeholder="Tell the mentor a little about your goals..."></textarea>
+      </div>
+      <button class="btn primary" type="submit" style="width:100%;margin-top:16px">Send request</button>
+      <div id="bookingMessage" class="message" style="margin-top:10px"></div>
+    </form>
+  </div>
+</div>
+
+<!-- EDIT TEACHER MODAL -->
+<div class="modal-bg" id="editTeacherModal" onclick="if(event.target===this)closeEditModal()">
+  <div class="modal">
+    <button class="close" onclick="closeEditModal()">×</button>
+    <span class="pill">Edit listing</span>
+    <h2>Update teacher profile</h2>
+    <form id="editTeacherForm" style="margin-top:14px">
+      <input type="hidden" name="id">
+      <div class="field">
+        <label>Display name</label>
+        <input name="name" required>
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label>Subject</label>
+        <select name="subject" id="editSubjectSelect" required></select>
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label>Experience</label>
+        <input name="experience">
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label>Mode</label>
+        <select name="mode">
+          <option>Online</option>
+          <option>Nearby</option>
+          <option>Online and Nearby</option>
+        </select>
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label>City / Neighbourhood</label>
+        <input name="location">
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label>Price</label>
+        <input name="price">
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label style="flex-direction:row;align-items:center;gap:8px">
+          <input type="checkbox" name="is_senior" style="width:auto">
+          <span>Senior Citizen / Life Experience Spotlight</span>
+        </label>
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label>Bio</label>
+        <textarea name="bio" rows="3"></textarea>
+      </div>
+      <button class="btn primary" type="submit" style="width:100%;margin-top:16px">Save changes</button>
+    </form>
+  </div>
+</div>
+
+<!-- LIVE VOICE / VIDEO MEETING ROOM MODAL -->
+<div class="modal-bg" id="meetModal" onclick="if(event.target===this)closeMeetModal()">
+  <div class="modal" style="max-width:540px">
+    <button class="close" onclick="closeMeetModal()">×</button>
+    <span class="pill" id="meetModeBadge">📹 Live Video Meet</span>
+    <h2 id="meetRoomTitle" style="margin-top:10px">OpenCircle Session</h2>
+    <p class="muted" style="margin-top:6px">Your private live session room is ready. Launch the call window or copy the invite link to share.</p>
+    <div class="reply-box" style="margin-top:14px;word-break:break-all">
+      <b>Room Link:</b> <span id="meetLinkDisplay"></span>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+      <a id="meetLaunchBtn" href="#" target="_blank" rel="noopener" class="btn primary" style="flex:1">Open Live Call Window ↗</a>
+      <button type="button" class="btn secondary" onclick="copyMeetLink()">Copy Invite Link</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
